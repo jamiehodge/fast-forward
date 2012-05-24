@@ -13,6 +13,8 @@ gem 'foreman'
 
 gem 'streamio-ffmpeg'
 
+gem 'rest-client'
+
 group :development do
   gem 'guard', github: 'guard', branch: 'listen'
   gem 'listen'

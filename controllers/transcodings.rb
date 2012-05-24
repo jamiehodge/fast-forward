@@ -7,10 +7,16 @@ class Transcodings < Sinatra::Base
   end
   
   post '/' do
-    @transcoding = Transcoding.new.set_only params, :source, :destination, :format
+    @transcoding = Transcoding.new
+    @transcoding.set_only params, :source, :destination, :format
     @transcoding.save
     
-    Resque.enqueue Transcode, @transcoding.id, params[:source], params[:destination]
+    Resque.enqueue Transcode, 
+      @transcoding.id, 
+      params[:source],
+      params[:format],
+      params[:destination], 
+      params[:asset_id]
     
     headers \
       'Location' => url("/#{@transcoding.id}")

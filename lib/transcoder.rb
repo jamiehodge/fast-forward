@@ -3,16 +3,17 @@ require 'tempfile'
 
 class Transcoder
   
-  def initialize(input)
+  def initialize(input, extension='m4v')
     @input = FFMPEG::Movie.new(input)
+    @extension = extension
   end
   
-  def self.from_url(input)
-    new open(input).path
+  def self.from_url(input, extension)
+    new open(input).path, extension
   end
   
   def transcode
-    t = Tempfile.open(['transcoder', extension]) do |output|
+    t = Tempfile.open(['transcoder', ".#{@extension}"]) do |output|
       @input.transcode(output.path) do |progress| 
         yield progress, output if block_given?
       end
@@ -30,9 +31,5 @@ class Transcoder
   
   def transcoder_options
     { preserve_aspect_ratio: :width }
-  end
-  
-  def extension
-    '.m4v' # override
   end
 end
